@@ -5,8 +5,7 @@ function clearHtml(ele) {
 
 // Getting the Ip Address from the Local storage 
 // that we passed while on HOME page and removing it
-let ipAddress = localStorage.getItem('ipAddress');
-localStorage.removeItem("ipAddress");
+let ipAddress = sessionStorage.getItem('ipAddress');
 
 
 // Function that gets data from Ip Adress
@@ -15,7 +14,6 @@ async function getIpInfo(ipAddress) {
         let url = `https://ipinfo.io/${ipAddress}?token=f0f149a8a42af3`
         let result = await fetch(url);
         let response = await result.json();
-        // console.log(response);
         getPostOfficeInfo(response);
     }
     catch (error) {
@@ -28,12 +26,16 @@ getIpInfo(ipAddress);
 
 // Function that gets Post Office Info with PinCode
 async function getPostOfficeInfo(details) {
-    let pincode = details.postal;
-    let url = `https://api.postalpincode.in/pincode/${pincode}`;
-    let result = await fetch(url);
-    let response = await result.json();
-    createUi(details, response);
-    createCards(response[0].PostOffice)
+    try {
+        let pincode = details.postal;
+        let url = `https://api.postalpincode.in/pincode/${pincode}`;
+        let result = await fetch(url);
+        let response = await result.json();
+        createUi(details, response);
+        createCards(response[0].PostOffice)
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 // Getting the Main Div and Body element to Append the HTML
@@ -63,9 +65,9 @@ function createUi(details, pincodeinfo) {
                                         </div>
                                         <div class="two-div">
                                             <p class="organisation-div">
-                                            Orgnations: <span>${(details.region)?.slice(0, 5)}</span>
+                                            Orgnations: <span>${(details.region)?.slice(0, 10)}...</span>
                                             </p>
-                                            <p class="hostname-div">Hostname: <span>${details.readme}</span></p>
+                                            <p class="hostname-div">Hostname: <span>${details.readme ? details.readme : "notfound"}</span></p>
                                         </div>
                                         </div>
                                     </section>
@@ -83,7 +85,7 @@ function createUi(details, pincodeinfo) {
                                         <div class="more-info-heading">More Information About You</div>
                                         <div class="more-info-list">
                                         <div class="more-info-div time-zone">
-                                            Time-Zone: <span>${details.timeZone}</span>
+                                            Time-Zone: <span>${details.timezone}</span>
                                         </div>
                                         <div class="more-info-div Date-and-Time">
                                             Date and Time: <span>${dateAndTime}</span>
