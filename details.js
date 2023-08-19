@@ -35,8 +35,8 @@ let maindiv = document.querySelector(".main");
 let body = document.getElementsByTagName("body")[0];
 
 function createUi(details, pincodeinfo) {
-    console.log(details)
-    console.log(pincodeinfo);
+    // console.log(details)
+    // console.log(pincodeinfo);
     let locString = details.loc;
     let arr = locString.split(",");
     let dateAndTime = new Date().toLocaleString("en-US", { timeZone: `${details.timezone}` });
@@ -109,7 +109,7 @@ function createUi(details, pincodeinfo) {
 
 
 function createCards(postOfficeInfo) {
-    console.log(postOfficeInfo)
+    // console.log(postOfficeInfo)
     let grid = document.querySelector(".grid");
     clearHtml(grid);
     postOfficeInfo.map((singlePostOffice) => {
@@ -144,7 +144,7 @@ function enableSearchBar(postOfficeArr) {
             console.log(postOfficeName)
             return postOfficeName.includes(searBarInput);
         })
-        console.log(filteredArr);
+        // console.log(filteredArr);
         createCards(filteredArr);
     })
 }
