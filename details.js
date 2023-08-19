@@ -1,18 +1,22 @@
+// Function to clear the HTML
 function clearHtml(ele) {
     ele.innerHTML = "";
 }
 
+// Getting the Ip Address from the Local storage 
+// that we passed while on HOME page and removing it
 let ipAddress = localStorage.getItem('ipAddress');
-// localStorage.removeItem("mytime");
+localStorage.removeItem("ipAddress");
 
-console.log(ipAddress);
+
+// Function that gets data from Ip Adress
 async function getIpInfo(ipAddress) {
     try {
         let url = `https://ipinfo.io/${ipAddress}?token=f0f149a8a42af3`
         let result = await fetch(url);
         let response = await result.json();
         // console.log(response);
-        pincodeinfo(response);
+        getPostOfficeInfo(response);
     }
     catch (error) {
         console.log(error);
@@ -22,7 +26,8 @@ async function getIpInfo(ipAddress) {
 getIpInfo(ipAddress);
 
 
-async function pincodeinfo(details) {
+// Function that gets Post Office Info with PinCode
+async function getPostOfficeInfo(details) {
     let pincode = details.postal;
     let url = `https://api.postalpincode.in/pincode/${pincode}`;
     let result = await fetch(url);
@@ -31,12 +36,14 @@ async function pincodeinfo(details) {
     createCards(response[0].PostOffice)
 }
 
+// Getting the Main Div and Body element to Append the HTML
 let maindiv = document.querySelector(".main");
 let body = document.getElementsByTagName("body")[0];
 
+
+// Creating UI with CreateUi function
+// It takes data coming from getPostOfficeInfo and getIpInfo
 function createUi(details, pincodeinfo) {
-    // console.log(details)
-    // console.log(pincodeinfo);
     let locString = details.loc;
     let arr = locString.split(",");
     let dateAndTime = new Date().toLocaleString("en-US", { timeZone: `${details.timezone}` });
@@ -107,9 +114,8 @@ function createUi(details, pincodeinfo) {
     body.appendChild(maindiv)
 }
 
-
+// Function to create Grid of Cards
 function createCards(postOfficeInfo) {
-    // console.log(postOfficeInfo)
     let grid = document.querySelector(".grid");
     clearHtml(grid);
     postOfficeInfo.map((singlePostOffice) => {
@@ -133,7 +139,7 @@ function createCards(postOfficeInfo) {
     enableSearchBar(postOfficeInfo);
 }
 
-
+// Function that handles Search Bar Functionality
 function enableSearchBar(postOfficeArr) {
     let searIconBtn = document.querySelector(".icon-btn");
 
@@ -144,14 +150,9 @@ function enableSearchBar(postOfficeArr) {
             console.log(postOfficeName)
             return postOfficeName.includes(searBarInput);
         })
-        // console.log(filteredArr);
         createCards(filteredArr);
     })
 }
-
-
-
-// Adding the search Bar functionality
 
 
 
